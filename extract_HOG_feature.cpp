@@ -4,8 +4,44 @@
  * and open the template in the editor.
  */
 #include "extract_HOG_feature.h"
+
+
 //#include"opencv2/opencv.hpp"
 /*@list file name and store in vector*/
+std::vector<Rect> pre_detect(Mat image)
+{
+    //Mat image;
+    std::vector<Rect> rois;
+    //image = imread("/home/dibyendu/Desktop/car/2.jpg", CV_LOAD_IMAGE_COLOR); 
+    namedWindow( "window1", 1 );   imshow( "window1", image );
+ 
+    // Load Face cascade (.xml file)
+    CascadeClassifier face_cascade;
+    face_cascade.load( "cascade.xml" );
+ 
+    // Detect faces
+    std::vector<Rect> faces;
+    face_cascade.detectMultiScale( image, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+    Mat roi;
+    String wn="wn";
+    //char *intStr;
+    ostringstream convert;
+    // Draw circles on the detected faces
+    for( int i = 0; i < faces.size(); i++ )
+    {
+        convert<<i;
+         roi = image(faces[i]);
+         rois.push_back(faces[i]);
+         //extract_HOG_feature::test_HOG_SVM_after_preprocess(image, roi);
+         //imshow( wn+convert.str(), roi );
+        //Point center( faces[i].x + faces[i].width*0.5, faces[i].y + faces[i].height*0.5 );
+        
+        //ellipse( image, center, Size( faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );
+    }
+    return rois;
+    //imshow( "Detected Face", image );
+    //waitKey(0);
+}
 vector<string> listFile(const char* dir_name){
 DIR *dpdf;
 struct dirent *epdf;
@@ -211,6 +247,82 @@ void extract_HOG_feature::train_HOG_SVM()
 // write(hogXml, "Label", labels);
 // hogXml.release();
 }
+void extract_HOG_feature::convert_HOG_SVM()
+{
+    //Set svm parameter
+ /////////////////////////////////////////////////////////////////////////////////
+// printf("1. SVM set parameter\n");
+// CvSVM svm;
+// CvSVMParams params;
+// params.svm_type = CvSVM::C_SVC;
+//    params.kernel_type = CvSVM::LINEAR;
+//    params.term_crit = cvTermCriteria( CV_TERMCRIT_ITER, 10000, 1e-6 );
+// /////////////////////////////////////////////////////////////////////////////////
+//Read Hog feature from XML file
+ ///////////////////////////////////////////////////////////////////////////
+// printf("2. trained  xml data  load\n");
+// //create xml to read
+// FileStorage read_PositiveXml("/root/opencv-cpp/HOG_git/HOG/trainedSVM.xml", FileStorage::READ);
+// //FileStorage read_NegativeXml("Negative.xml", FileStorage::READ);
+//
+// //Positive Mat
+// Mat pMat;
+// read_PositiveXml["Descriptor_of_images"] >> pMat;
+// //Read Row, Cols
+// int pRow,pCol;
+// pRow = pMat.rows; pCol = pMat.cols;
+ //char SaveHogDesFileName[100] = "Positive.xml";
+ const char* SaveHogDesFileName = "trainedSVM.xml";
+ //const char* SaveHogDesFileName = argv[2];
+
+ //Load trained SVM xml data
+ CvSVM svm;
+ //svm.load("trainedSVM.xml");
+ svm.load(SaveHogDesFileName);
+ 
+ 
+ 
+    //make firstly, inherited class to access alpha vector and value
+int svmVectorSize = svm.get_support_vector_count();
+//int featureSize = pCol;
+cout<<"pCol:: "<<" svmVectorSize:: "<<svmVectorSize<<"\n";
+////prepare, variables
+//
+//
+//Mat sv = Mat(svmVectorSize, featureSize, CV_32FC1, 0.0);
+//Mat alp = Mat(1, svmVectorSize, CV_32FC1, 0.0);
+//Mat re = Mat(1, featureSize, CV_32FC1, 0.0);
+//Mat re2 = Mat(1, featureSize+1, CV_32FC1, 0.0);
+//
+//
+//
+////set value to variables
+//for(int i=0; i< svmVectorSize; ++i)
+//memcpy( (sv.data + i*featureSize), svm.get_support_vector(i), featureSize*sizeof(float) ); //ok
+//
+//
+//double * alphaArr = svm.get_alpha();
+//int alphaCount = svm.get_alpha_count();
+//
+//for(int i=0; i< svmVectorSize; ++i)
+//{
+//alp.at< float>(0, i) = (float)alphaArr[i];
+////printf("alpha[%d] = %lf \n", i, (float)alphaArr[i] );
+//}
+//
+////cvMatMul(alp, sv, re);
+//re = alp * sv;
+//
+//for(int i=0; i< featureSize; ++i)
+//re2.at< float>(0,i) = re.at< float>(0,i) * -1;
+//re2.at< float>(0,featureSize) = svm.get_rho();
+//
+////save to 1d vector to XML format!!
+//FileStorage svmSecondXML(SVM_HOGDetectorFile, FileStorage::WRITE);
+//svmSecondXML << "SecondSVMd" << re2 ;
+//
+//svmSecondXML.release();
+}
 void extract_HOG_feature::test_HOG_SVM(const char* dir_name1)
 {
     
@@ -278,9 +390,53 @@ cout << dir_name+*i << "\n";
   //show image
   imshow("origin", img);
 
-  waitKey(5);
+  waitKey();
  }
 
  printf(" positive/negative = (%d/%d) \n", ppp, nnn);
     
+}
+void extract_HOG_feature::test_HOG_SVM_after_preprocess(Mat roi)
+{
+//     char const* ca;
+ const char* SaveHogDesFileName = "trainedSVM.xml";
+// //Load trained SVM xml data
+ CvSVM svm;
+// //svm.load("trainedSVM.xml");
+ svm.load(SaveHogDesFileName);
+// //count variable
+ int nnn=0, ppp=0;
+//for(vector<string>::const_iterator i = ImgFileName.begin(); i != ImgFileName.end(); ++i) {
+//// for(int i=0; i< FileNum; ++i) {
+//cout << dir_name+*i << "\n";
+//  //read image file
+  Mat img, img_gray;
+//  //img = imread(FullFileName);
+  img = roi;
+//    //resizing
+  resize(img, img, Size(64,48) ); //Size(32*2,16*2)); //Size(80,72) ); 
+//  //gray
+  cvtColor(img, img_gray, CV_RGB2GRAY);
+//  //Extract HogFeature
+  HOGDescriptor d( Size(32,16), Size(8,8), Size(4,4), Size(4,4), 9);
+  vector< float> descriptorsValues;
+  vector< Point> locations;
+  d.compute( img_gray, descriptorsValues, Size(0,0), Size(0,0), locations);
+//  //vector to Mat
+  Mat fm = Mat(descriptorsValues);
+//    //Classification whether data is positive or negative
+  int result = svm.predict(fm);
+//  FullFileName = dir_name+*i;
+//  ca = FullFileName.c_str();
+  printf("%d\n", result);
+//  //Count data
+  if(result == 1)
+   ppp++;
+  else
+   nnn++;
+//  //show image
+  imshow("origin", img);
+  waitKey();
+// }
+ //printf(" positive/negative = (%d/%d) \n", ppp, nnn);
 }

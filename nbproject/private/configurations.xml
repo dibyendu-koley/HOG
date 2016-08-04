@@ -26,8 +26,9 @@
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" /home/dibyendu/Desktop/Desktop_upto_20_07_2016/opencv/car/13-04-2016-car-dekho-2-3-lkh-kolkata/imageclipper_test_pos/</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" /home/dibyendu/Desktop/Desktop_save_15_7_2016/plate/raw/</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" /home/dibyendu/Desktop/Desktop_upto_20_07_2016/opencv/car/13-04-2016-car-dekho-2-3-lkh-kolkata/imageclipper_test_pos/</runcommand>
+        <runcommand>"${OUTPUT_PATH}" /home/dibyendu/Desktop/Desktop_save_15_7_2016/plate/raw/</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>

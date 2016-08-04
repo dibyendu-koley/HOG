@@ -18,6 +18,9 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <dirent.h>
+#include <string> 
+#include <stdio.h>
+#include <stdlib.h>
 using namespace cv;
 using namespace std;
 #ifdef _DEBUG        
@@ -36,7 +39,9 @@ extract_HOG_feature(void);
 void extract_NEG(void);
 void extract_POS(void);
 void train_HOG_SVM(void);
+void convert_HOG_SVM(void);
 void test_HOG_SVM(const char* dir_name);
+void test_HOG_SVM_after_preprocess(Mat roi);
 private:
 int Y_MIN;
 int Y_MAX;
@@ -46,5 +51,6 @@ int Cb_MIN;
 int Cb_MAX;
 };
 vector<string> listFile(const char* dir_name);
+std::vector<Rect> pre_detect(Mat image);
 #endif /* EXTRACT_HOG_FEATURE_H */
 
