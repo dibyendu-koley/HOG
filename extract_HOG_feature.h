@@ -42,6 +42,8 @@ void train_HOG_SVM(void);
 void convert_HOG_SVM(void);
 void test_HOG_SVM(const char* dir_name);
 void test_HOG_SVM_after_preprocess(Mat roi);
+bool verifySizes(RotatedRect mr);
+void testPlate(Mat roi,bool showSteps);
 private:
 int Y_MIN;
 int Y_MAX;

@@ -21,8 +21,14 @@ using namespace std;
  */
 int main(int argc, char** argv) {
      Mat image;
-    image = imread("/home/dibyendu/Desktop/car/car/test/3.jpg", CV_LOAD_IMAGE_COLOR); 
+    image = imread("/home/dibyendu/Desktop/car/back/1.jpg", CV_LOAD_IMAGE_COLOR); 
     
+    Size size(image.size().width*.9,image.size().height*.9);//the dst image size,e.g.100x100
+    //Mat dst;//dst image
+    //Mat src;//src image
+    //resize(src,dst,size);//resize image
+    resize(image,image,size);//resize image
+
     std::vector<Rect> rois;
     Mat roi;
     const char* test_image_dir = argv[1];
@@ -40,11 +46,12 @@ int main(int argc, char** argv) {
         
             convert<<j;
             j++;
-            rectangle( image, cvPoint(cvRound(i->x*scale), cvRound(i->y*scale)),
-                   cvPoint(cvRound((i->x + i->width-1)*scale), cvRound((i->y + i->height-1)*scale)),
-                   Scalar( 255, 0, 0 ), 3, 8, 0);
-            roi = image(Rect(i->x,i->y+25,i->width,i->height*.4));
-            test.test_HOG_SVM_after_preprocess(roi);
+//            rectangle( image, cvPoint(cvRound(i->x*scale), cvRound(i->y*scale)),
+//                   cvPoint(cvRound((i->x + i->width-1)*scale), cvRound((i->y + i->height-1)*scale)),
+//                   Scalar( 255, 0, 0 ), 3, 8, 0);
+            roi = image(Rect(i->x+10,i->y+25,i->width*.9,i->height*.4));
+            //test.test_HOG_SVM_after_preprocess(roi);
+            test.testPlate(roi,true);
         }
     //test.convert_HOG_SVM();
     return 0;
